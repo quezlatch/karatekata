@@ -1,0 +1,13 @@
+{
+  "name": "karatekata",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "author": "quezlatch",
+  "license": "ISC"
+}
