@@ -25,6 +25,10 @@ describe('a sequence of 10', () => {
         }
     }
     var assertFindsNumberInSequence = i => assert.equal(i, karate(10, makeComparer(i)));
-    it('finds 5, as first midpoint', () => assertFindsNumberInSequence(5));
-    it('finds 7, as 2nd midpoint', () => assertFindsNumberInSequence(7));
+    describe('a sequence of 10', () => {
+        it('finds 5, as first midpoint', () => assertFindsNumberInSequence(5));
+        it('finds 7, as 2nd midpoint', () => assertFindsNumberInSequence(7));
+        it('finds 8, as 3rd midpoint', () => assertFindsNumberInSequence(8));
+        it('finds 9, as 4th midpoint', () => assertFindsNumberInSequence(9));
+    });
 });
