@@ -3,12 +3,23 @@ var assert = require('assert');
 var isEqual = 0;
 var isLower = 1;
 var isHigher = 2;
+var notFound = -1;
 
 function karate(size, comparer) {
-    function goHigher(current, last){
-        var midpoint = current + Math.floor((last - current)/2);
+    function goLower(current, last){
+        var midpoint = current - Math.ceil((last - current)/2);
+        if (midpoint == current) return notFound;
         var c = comparer(midpoint)
         if (c === isHigher) return goHigher(midpoint, last);
+        if (c === isLower) return goLower(current, midpoint);
+        return midpoint
+    }
+    function goHigher(current, last){
+        var midpoint = current + Math.floor((last - current)/2);
+        if (midpoint == current) return notFound;
+        var c = comparer(midpoint)
+        if (c === isHigher) return goHigher(midpoint, last);
+        if (c === isLower) return goLower(current, midpoint);
         return midpoint
     }
     return goHigher(0, size);
@@ -26,9 +37,19 @@ describe('a sequence of 10', () => {
     }
     var assertFindsNumberInSequence = i => assert.equal(i, karate(10, makeComparer(i)));
     describe('a sequence of 10', () => {
-        it('finds 5, as first midpoint', () => assertFindsNumberInSequence(5));
-        it('finds 7, as 2nd midpoint', () => assertFindsNumberInSequence(7));
-        it('finds 8, as 3rd midpoint', () => assertFindsNumberInSequence(8));
-        it('finds 9, as 4th midpoint', () => assertFindsNumberInSequence(9));
+        describe('going up', () => {
+            it('finds 5, as first midpoint', () => assertFindsNumberInSequence(5));
+            it('finds 7, as 2nd midpoint', () => assertFindsNumberInSequence(7));
+            it('finds 8, as 3rd midpoint', () => assertFindsNumberInSequence(8));
+            it('finds 9, as 4th midpoint', () => assertFindsNumberInSequence(9));
+            it('has not found, as goes out of bounds', () => assert.equal(notFound, karate(10, () => isHigher)));
+        });
+        describe('going down', () => {
+            it('finds 3, as 2nd midpoint', () => assertFindsNumberInSequence(3));
+            it('finds 2, as 2nd midpoint', () => assertFindsNumberInSequence(3));
+            it('finds 1, as 2nd midpoint', () => assertFindsNumberInSequence(3));
+            it('finds 0, as 2nd midpoint', () => assertFindsNumberInSequence(3));
+            it('has not found, as goes out of bounds', () => assert.equal(notFound, karate(10, () => isLower)));
+        });
     });
 });
