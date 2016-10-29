@@ -6,23 +6,17 @@ var isHigher = 2;
 var notFound = -1;
 
 function karate(size, comparer) {
-    function goLower(lower, upper){
-        var midpoint = lower - Math.ceil((upper - lower)/2);
+    var goLower = (lower, upper) => lower - Math.ceil((upper - lower)/2);
+    var goHigher = (lower, upper) => lower + Math.floor((upper - lower)/2);
+    function chop(lower, upper, getMidpoint){
+        var midpoint = getMidpoint(lower, upper);
         if (midpoint == lower) return notFound;
         var c = comparer(midpoint)
-        if (c === isHigher) return goHigher(midpoint, upper);
-        if (c === isLower) return goLower(lower, midpoint);
+        if (c === isHigher) return chop(midpoint, upper, goHigher);
+        if (c === isLower) return chop(lower, midpoint, goLower);
         return midpoint
     }
-    function goHigher(lower, upper){
-        var midpoint = lower + Math.floor((upper - lower)/2);
-        if (midpoint == lower) return notFound;
-        var c = comparer(midpoint)
-        if (c === isHigher) return goHigher(midpoint, upper);
-        if (c === isLower) return goLower(lower, midpoint);
-        return midpoint
-    }
-    return goHigher(0, size);
+    return chop(0, size, goHigher);
 }
 
 describe('a sequence of 10', () => {
