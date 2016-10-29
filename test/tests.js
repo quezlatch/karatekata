@@ -6,20 +6,20 @@ var isHigher = 2;
 var notFound = -1;
 
 function karate(size, comparer) {
-    function goLower(current, last){
-        var midpoint = current - Math.ceil((last - current)/2);
-        if (midpoint == current) return notFound;
+    function goLower(lower, upper){
+        var midpoint = lower - Math.ceil((upper - lower)/2);
+        if (midpoint == lower) return notFound;
         var c = comparer(midpoint)
-        if (c === isHigher) return goHigher(midpoint, last);
-        if (c === isLower) return goLower(current, midpoint);
+        if (c === isHigher) return goHigher(midpoint, upper);
+        if (c === isLower) return goLower(lower, midpoint);
         return midpoint
     }
-    function goHigher(current, last){
-        var midpoint = current + Math.floor((last - current)/2);
-        if (midpoint == current) return notFound;
+    function goHigher(lower, upper){
+        var midpoint = lower + Math.floor((upper - lower)/2);
+        if (midpoint == lower) return notFound;
         var c = comparer(midpoint)
-        if (c === isHigher) return goHigher(midpoint, last);
-        if (c === isLower) return goLower(current, midpoint);
+        if (c === isHigher) return goHigher(midpoint, upper);
+        if (c === isLower) return goLower(lower, midpoint);
         return midpoint
     }
     return goHigher(0, size);
