@@ -28,14 +28,18 @@ function karateArray(searchItem, arr) {
 }
 
 describe('the karate binary chop', () => {
-    describe('a sequence of 10', () => {
-        function makeComparer(i) {
-            return function(idx, isEqual, isLower, isHigher) {
-                if (i < idx) return isLower;
-                if (i > idx) return isHigher;
-                return isEqual;
-            }
+    function range(r) {
+        return [...Array(r).keys()];
+    }
+    var rnd = bound => Math.floor(Math.random() * bound);
+    function makeComparer(searchItem) {
+        return function(idx, isEqual, isLower, isHigher) {
+            if (searchItem < idx) return isLower;
+            if (searchItem > idx) return isHigher;
+            return isEqual;
         }
+    }
+    describe('a sequence of 10', () => {
         describe('for every number in the sequence', () => {
             for (var i = 0; i < 10; i++) {
                 var item = i;
@@ -47,11 +51,7 @@ describe('the karate binary chop', () => {
             it('a number before the sequence', () => assert.equal(notFound, karate(10, (_, __, isLower, ___) => isLower)));
         });
     });
-    describe('random arrays of in order numbers', () => {
-        function range(r) {
-            return [...Array(r).keys()];
-        }
-        var rnd = bound => Math.floor(Math.random() * bound);
+    describe('sequence of random size', () => {
         function orderedRandomArray(size) {
             var arr = [size];
             var v = 0;
@@ -63,12 +63,12 @@ describe('the karate binary chop', () => {
         }
         range(2).forEach(_ => {
             var size = rnd(500) + 10;
-            var arr = orderedRandomArray(size);
+            var orderedArray = orderedRandomArray(size);
             describe('array sized ' + size, () => {
                 range(2).forEach( _ => {
                     var idx = rnd(size);
-                    var v = arr[idx];
-                    it('index of value ' + v + ' is at ' + idx, () => assert.equal(idx, karateArray(v, arr)));
+                    var item = orderedArray[idx];
+                    it('index of item ' + item + ' is at ' + idx, () => assert.equal(idx, karateArray(item, orderedArray)));
                 });
             });
         });
