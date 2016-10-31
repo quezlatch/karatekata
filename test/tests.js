@@ -3,34 +3,30 @@ var assert = require('assert');
 var notFound = -1;
 
 function karate(size, comparer) {
-    var goLower = (lower, upper) => lower - Math.ceil((upper - lower)/2);
-    var goHigher = (lower, upper) => lower + Math.floor((upper - lower)/2);
-    function chop(lower, upper, getMidpoint){
-        var midpoint = getMidpoint(lower, upper);
+    function chop(lower, upper){
+        var midpoint = lower - Math.ceil((lower - upper)/2);
         return (midpoint == lower) 
             ? notFound
             : comparer(midpoint, 
                 () => midpoint, 
-                () => chop(lower, midpoint, goLower), 
-                () => chop(midpoint, upper, goHigher))();
+                () => chop(lower, midpoint), 
+                () => chop(midpoint, upper))();
     }
-    return chop(0, size, goHigher);
+    return chop(0, size);
 }
 
-function karateArray(searchItem, arr) {
+function karateArray(searchItem, orderedArray) {
     function comparer(idx, isEqual, isLower, isHigher) {
-        var item = arr[idx];
-        if (item > searchItem) return isLower;
-        if (item < searchItem) return isHigher;
+        var item = orderedArray[idx];
+        if (searchItem < item ) return isLower;
+        if (searchItem > item ) return isHigher;
         return isEqual;
     }
-    return karate(arr.length, comparer);
+    return karate(orderedArray.length, comparer);
 }
 
 describe('the karate binary chop', () => {
-    function range(r) {
-        return [...Array(r).keys()];
-    }
+    var range = r => [...Array(r).keys()];
     var rnd = bound => Math.floor(Math.random() * bound);
     function makeComparer(searchItem) {
         return function(idx, isEqual, isLower, isHigher) {
@@ -61,11 +57,11 @@ describe('the karate binary chop', () => {
             }
             return arr;
         }
-        range(2).forEach(_ => {
+        range(10).forEach(_ => {
             var size = rnd(500) + 10;
             var orderedArray = orderedRandomArray(size);
             describe('array sized ' + size, () => {
-                range(2).forEach( _ => {
+                range(10).forEach( _ => {
                     var idx = rnd(size);
                     var item = orderedArray[idx];
                     it('index of item ' + item + ' is at ' + idx, () => assert.equal(idx, karateArray(item, orderedArray)));
