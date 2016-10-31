@@ -3,9 +3,12 @@ var assert = require('assert');
 var notFound = -1;
 
 function karate(size, comparer) {
-    function chop(lower, upper){
+    function outOfBounds(lower, upper) {
+        return (lower === size - 1 || upper === 0);
+    }
+    function chop(lower, upper) {
         var midpoint = lower - Math.ceil((lower - upper)/2);
-        return (midpoint == lower) 
+        return outOfBounds(lower, upper)
             ? notFound
             : comparer(midpoint, 
                 () => midpoint, 
@@ -61,7 +64,7 @@ describe('the karate binary chop', () => {
             var size = rnd(500) + 10;
             var orderedArray = orderedRandomArray(size);
             describe('array sized ' + size, () => {
-                range(10).forEach( _ => {
+                range(100).forEach( _ => {
                     var idx = rnd(size);
                     var item = orderedArray[idx];
                     it('index of item ' + item + ' is at ' + idx, () => assert.equal(idx, karateArray(item, orderedArray)));
